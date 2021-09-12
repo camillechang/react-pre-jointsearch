@@ -31,18 +31,22 @@ export const ProjectSearchList = () => {
         return result;
     };
     useEffect(() => {
-        // const combineSearch = pipe(
-        //     cleanObject,
-        //     changeParamProjectName,
-        //     qs.stringify
-        // );
-        fetch(`${apiURL}/projects?${qs.stringify(changeParamProjectName(cleanObject(param)))}`).then(
-            async (response) => {
-                if (response.ok) {
-                    setList(await response.json());
-                }
-            }
+        const combineSearch = pipe(
+            cleanObject,
+            changeParamProjectName,
+            qs.stringify
         );
+
+        //combineSearch(param)===
+        //qs.stringify(changeParamProjectName(cleanObject(param)))
+        fetch(`${apiURL}/projects?${combineSearch(param)
+            }`).then(
+                async (response) => {
+                    if (response.ok) {
+                        setList(await response.json());
+                    }
+                }
+            );
     }, [param]);
     return (<>
         <SearchPanel param={param} setParam={setParam} managers={managers} />
