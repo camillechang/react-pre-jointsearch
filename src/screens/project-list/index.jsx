@@ -1,13 +1,15 @@
+
+
 import { useState, useEffect } from "react";
 import { List } from "./list";
 import { isTrue, cleanObject } from "../utils";
 import { SearchPanel } from "./search-panel";
 import * as qs from "qs";
 import pipe from "lodash/fp/pipe";
+require('dotenv').config();
+const apiURL = process.env.REACT_APP_API_URL;
 
-// const apiURL = process.env.REACT_APP_API_URL;
 
-const apiURL = "http://localhost:5566";
 export const ProjectSearchList = () => {
     const [param, setParam] = useState({ project_name: "", manager_id: "" }); // param.manager_id param.project_name
     const [managers, setManagers] = useState([]);
