@@ -1,14 +1,23 @@
 
-
+import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { List } from "./list";
-import { isTrue, cleanObject } from "../utils";
+import { isTrue, cleanObject, useDebounce } from "../utils";
 import { SearchPanel } from "./search-panel";
 import * as qs from "qs";
 import pipe from "lodash/fp/pipe";
 require('dotenv').config();
+
+
+
 const apiURL = process.env.REACT_APP_API_URL;
 
+const StyledProjectList = styled.div`
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
 
 export const ProjectSearchList = () => {
     const [param, setParam] = useState({ project_name: "", manager_id: "" }); // param.manager_id param.project_name
@@ -23,6 +32,10 @@ export const ProjectSearchList = () => {
         });
     }, []);
 
+
+
+
+
     const changeParamProjectName = (object) => {
         const result = { ...object };
         const value = result["project_name"];
@@ -32,6 +45,10 @@ export const ProjectSearchList = () => {
         }
         return result;
     };
+
+    const debounceParam = useDebounce(param, 1000);
+
+
     useEffect(() => {
         const combineSearch = pipe(
             cleanObject,
@@ -41,7 +58,7 @@ export const ProjectSearchList = () => {
 
         //combineSearch(param)===
         //qs.stringify(changeParamProjectName(cleanObject(param)))
-        fetch(`${apiURL}/projects?${combineSearch(param)
+        fetch(`${apiURL}/projects?${combineSearch(debounceParam)
             }`).then(
                 async (response) => {
                     if (response.ok) {
@@ -49,10 +66,10 @@ export const ProjectSearchList = () => {
                     }
                 }
             );
-    }, [param]);
-    return (<>
+    }, [debounceParam]);
+    return (<StyledProjectList>
         <SearchPanel param={param} setParam={setParam} managers={managers} />
         <List list={list} managers={managers} />
-    </>
+    </StyledProjectList>
     );
 };
